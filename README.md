@@ -26,7 +26,6 @@
 │   ├── __init__.py
 │   ├── main.py
 │   ├── models.py
-│   ├── schemas.py
 │   └── database.py
 ├── tests/
 │   ├── __init__.py
@@ -60,7 +59,7 @@ cd yadro_python
 
 2. Запустите приложение с помощью Docker Compose:
 ```bash
-docker-compose up -d
+docker-compose up --build
 ```
 
 Приложение будет доступно по адресу: http://localhost:8000
