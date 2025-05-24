@@ -28,6 +28,10 @@
 │   ├── models.py
 │   ├── schemas.py
 │   └── database.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_api.py
+│   └── conftest.py
 ├── alembic/
 │   ├── versions/
 │   └── env.py
@@ -57,7 +61,7 @@ cd yadro_python
 
 2. Запустите приложение с помощью Docker Compose:
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
 Приложение будет доступно по адресу: http://localhost:8000
@@ -70,20 +74,64 @@ docker-compose up --build
 - Загружается 1000 случайных пользователей из API
 - Запускается веб-сервер
 
+## Тестирование
+
+### Запуск тестов
+
+1. Убедитесь, что контейнеры запущены:
+```bash
+docker-compose ps
+```
+
+2. Запустите тесты:
+```bash
+docker-compose exec web pytest
+```
+
+3. Для более подробного вывода:
+```bash
+docker-compose exec web pytest -v
+```
+
+4. Для запуска конкретного теста:
+```bash
+docker-compose exec web pytest tests/test_api.py::test_read_root -v
+```
+
+### Полезные команды для тестирования
+
+- Просмотр логов приложения:
+```bash
+docker-compose logs -f web
+```
+
+- Просмотр логов базы данных:
+```bash
+docker-compose logs -f db
+```
+
+- Проверка подключения к базе данных:
+```bash
+docker-compose exec db psql -U user -d random_users
+```
+
+- Очистка всех данных (включая базу):
+```bash
+docker-compose down -v
+```
+
+- Пересборка контейнеров (после изменения зависимостей):
+```bash
+docker-compose down
+docker-compose build
+docker-compose up -d
+```
+
 ## API Endpoints
 
 - `GET /` - Основная страница с формой для загрузки пользователей и таблицей
 - `GET /{user_id}` - Получение информации о конкретном пользователе
 - `GET /random` - Получение информации о случайном пользователе
-
-## Тестирование
-
-Для запуска тестов выполните:
-```bash
-pytest
-```
-
-Тесты с внешним API замоканы для обеспечения стабильности тестирования.
 
 ## Переменные окружения
 
