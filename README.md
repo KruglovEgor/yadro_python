@@ -51,8 +51,8 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone <https://github.com/KruglovEgor/yadro_python>
-cd <yadro_python>
+git clone https://github.com/KruglovEgor/yadro_python
+cd yadro_python
 ```
 
 2. Запустите приложение с помощью Docker Compose:
@@ -73,9 +73,8 @@ docker-compose up --build
 ## API Endpoints
 
 - `GET /` - Основная страница с формой для загрузки пользователей и таблицей
-- `GET /user/{user_id}` - Получение информации о конкретном пользователе
+- `GET /{user_id}` - Получение информации о конкретном пользователе
 - `GET /random` - Получение информации о случайном пользователе
-- `POST /users/load` - Загрузка указанного количества пользователей
 
 ## Тестирование
 
