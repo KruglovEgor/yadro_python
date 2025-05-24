@@ -39,8 +39,7 @@
 ├── docker-compose.yml
 ├── init.sh
 ├── requirements.txt
-├── README.md
-└── start.sh
+└── README.md
 
 ```
 
@@ -126,6 +125,27 @@ docker-compose down
 docker-compose build
 docker-compose up -d
 ```
+
+### Возврат к нормальной работе после тестирования
+
+После запуска тестов база данных содержит только тестовые данные. Чтобы вернуться к нормальной работе с реальными данными:
+
+1. Остановите контейнеры:
+```bash
+docker-compose down
+```
+
+2. Удалите все данные (включая тестовую базу):
+```bash
+docker-compose down -v
+```
+
+3. Запустите приложение заново:
+```bash
+docker-compose up -d
+```
+
+Это пересоздаст базу данных и загрузит 1000 реальных пользователей из API при старте приложения.
 
 ## API Endpoints
 

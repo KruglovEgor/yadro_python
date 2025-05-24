@@ -1,18 +1,11 @@
-"""initial migration
-
-Revision ID: initial_migration
-Revises: 
-Create Date: 2024-05-24 19:30:00.000000
-
-"""
 from alembic import op
 import sqlalchemy as sa
 
-# revision identifiers, used by Alembic.
 revision = 'initial_migration'
 down_revision = None
 branch_labels = None
 depends_on = None
+
 
 def upgrade() -> None:
     op.create_table(
@@ -28,5 +21,6 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('id')
     )
 
+
 def downgrade() -> None:
-    op.drop_table('users') 
+    op.drop_table('users')

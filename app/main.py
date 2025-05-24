@@ -26,26 +26,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Удаляем существующие таблицы и индексы
 with engine.connect() as conn:
     conn.execute(text("DROP TABLE IF EXISTS users CASCADE"))
     conn.commit()
 
-# Создаем таблицы
 Base.metadata.create_all(bind=engine)
 
-# Конфигурация
 RANDOM_USER_API = "https://randomuser.me/api/"
 INITIAL_USERS_COUNT = 1000
+
 
 async def fetch_users(count: int) -> List[dict]:
     """Асинхронно загружает пользователей с randomuser.me"""
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{RANDOM_USER_API}?results={count}")
         return response.json()["results"]
+
 
 def process_user_data(user_data: dict) -> dict:
     """Обрабатывает данные пользователя из API"""
@@ -69,33 +67,30 @@ def process_user_data(user_data: dict) -> dict:
         "updated_at": datetime.utcnow()
     }
 
+
 @app.on_event("startup")
 async def startup_event():
     """Загружает начальные данные при запуске приложения"""
     print("Starting application...")
     db = next(get_db())
     try:
-        # Проверяем, есть ли уже пользователи в базе
         user_count = db.query(User).count()
         print(f"Current user count: {user_count}")
         
         if user_count == 0:
             print("No users found, loading initial data...")
-            # Загружаем 1000 пользователей
             users_data = await fetch_users(1000)
             print(f"Fetched {len(users_data)} users from API")
             
-            # Добавляем пользователей по одному
             for user_data in users_data:
                 processed_user = process_user_data(user_data)
                 user = User(**processed_user)
                 db.add(user)
-                db.flush()  # Сбрасываем изменения в базу данных
+                db.flush()
             
             db.commit()
             print(f"Successfully added users to database")
             
-            # Проверяем, что пользователи действительно добавились
             final_count = db.query(User).count()
             print(f"Final user count: {final_count}")
     except Exception as e:
@@ -105,15 +100,18 @@ async def startup_event():
         db.close()
         print("Startup completed")
 
+
 @app.get("/")
 async def read_root():
     """Возвращает главную страницу"""
     return FileResponse("static/index.html")
 
+
 @app.get("/random")
 async def read_random_user_page():
     """Возвращает страницу со случайным пользователем"""
     return FileResponse("static/user.html")
+
 
 @app.get("/{user_id}")
 async def read_user(user_id: int, db: Session = Depends(get_db)):
@@ -122,6 +120,7 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return FileResponse("static/user.html")
+
 
 @app.get("/api/users")
 async def get_users(
@@ -137,6 +136,7 @@ async def get_users(
         "users": users
     }
 
+
 @app.get("/api/user/{user_id}")
 async def get_user(user_id: int, db: Session = Depends(get_db)):
     """Получает информацию о конкретном пользователе"""
@@ -144,6 +144,7 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
 
 @app.get("/api/random")
 async def get_random_user(db: Session = Depends(get_db)):
