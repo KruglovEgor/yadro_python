@@ -156,7 +156,3 @@ docker-compose up -d
 
 - `DATABASE_URL` - URL для подключения к базе данных PostgreSQL
 - `PYTHONPATH` - Путь к директории приложения
-
-## Лицензия
-
-MIT 
